@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: ai-resume-coach-api
+    runtime: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn main:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: PYTHONDONTWRITEBYTECODE
+        value: "1"
+      - key: NVIDIA_API_KEY
+        sync: false
+    autoDeploy: true
