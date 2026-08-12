@@ -1,4 +1,4 @@
-import { motion, useAnimation, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useMotionValue, useSpring } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { Star, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -49,7 +49,6 @@ const testimonials: Testimonial[] = [
 export default function Testimonials() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStart, setTouchStart] = useState<number | null>(null);
-  const controls = useAnimation();
   const x = useMotionValue(0);
   const springX = useSpring(x, { stiffness: 300, damping: 30 });
 
@@ -114,7 +113,6 @@ export default function Testimonials() {
         {/* Carousel */}
         <div className="relative">
           <motion.div
-            animate={{ x: springX }}
             style={{ x: springX }}
             className="overflow-hidden"
             role="region"

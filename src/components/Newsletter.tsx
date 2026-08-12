@@ -1,4 +1,4 @@
-import { motion, useAnimation } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { Mail, Check, Loader2 } from 'lucide-react';
 
@@ -6,7 +6,6 @@ export default function Newsletter() {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
-  const containerControls = useAnimation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +25,12 @@ export default function Newsletter() {
     setStatus('success');
     setMessage('Thank you for subscribing! Exclusive offers coming your way.');
     setEmail('');
-    containerControls.start({ scale: [1, 1.02, 1] });
+
+    // Reset status after a few seconds
+    setTimeout(() => {
+      setStatus('idle');
+      setMessage('');
+    }, 5000);
   };
 
   return (
@@ -37,11 +41,11 @@ export default function Newsletter() {
     >
       <div className="max-w-3xl mx-auto">
         <motion.div
-          ref={containerControls}
           initial={{ opacity: 0, y: 40, scale: 0.98 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.8 }}
+          animate={{ scale: status === 'success' ? 1.02 : 1 }}
           className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-4xl p-8 md:p-12 text-center overflow-hidden"
         >
           {/* Decorative background elements */}

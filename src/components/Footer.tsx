@@ -1,12 +1,13 @@
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
   MapPin,
   Phone,
   Mail,
-  Facebook,
-  Instagram,
-  Twitter,
-  Youtube,
+  MessageSquare,
+  Camera,
+  MessageCircle,
+  PlayCircle,
   MapPin as MapPinIcon,
 } from 'lucide-react';
 
@@ -36,10 +37,10 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { icon: Facebook, href: '#', label: 'Facebook' },
-  { icon: Instagram, href: '#', label: 'Instagram' },
-  { icon: Twitter, href: '#', label: 'Twitter' },
-  { icon: Youtube, href: '#', label: 'YouTube' },
+  { icon: MessageSquare, href: '#', label: 'Facebook' },
+  { icon: Camera, href: '#', label: 'Instagram' },
+  { icon: MessageCircle, href: '#', label: 'Twitter' },
+  { icon: PlayCircle, href: '#', label: 'YouTube' },
 ];
 
 export default function Footer() {

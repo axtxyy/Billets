@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ImageIcon, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 
 const galleryImages = [
   {

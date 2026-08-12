@@ -1,6 +1,17 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --font-heading: "Playfair Display", serif;
+  --font-body: "Inter", sans-serif;
+
+  --color-warmwhite: #F5F0EB;
+  --color-beige: #D9C9B8;
+  --color-softgray: #A8A3A0;
+  --color-charcoal: #1A1A1A;
+  --color-royalgold: #C9A84C;
+  --color-bronze: #A0785A;
+  --color-deepnavy: #0B1D3A;
+}
 
 @layer base {
   html {

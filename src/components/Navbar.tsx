@@ -5,12 +5,12 @@ import { Link } from 'react-router-dom';
 
 const navLinks = [
   { label: 'Home', to: '/' },
-  { label: 'Rooms', to: '#rooms' },
-  { label: 'Dining', to: '#dining' },
-  { label: 'Amenities', to: '#amenities' },
-  { label: 'Gallery', to: '#gallery' },
-  { label: 'About', to: '#about' },
-  { label: 'Contact', to: '#contact' },
+  { label: 'Rooms', to: '/rooms' },
+  { label: 'Dining', to: '/dining' },
+  { label: 'Amenities', to: '/amenities' },
+  { label: 'Gallery', to: '/gallery' },
+  { label: 'About', to: '/about' },
+  { label: 'Contact', to: '/contact' },
 ];
 
 export default function Navbar() {

@@ -1,39 +1,54 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, MapPin, Star } from 'lucide-react';
 
-interface Room {
+export interface Room {
   id: string;
   name: string;
   description: string;
   price: number;
+  originalPrice?: number;
+  taxesAndFees?: number;
   image: string;
+  gallery?: string[];
   features: string[];
+  capacity?: number;
+  bedType?: string;
+  cancellation?: string;
+  policies?: string[];
 }
 
 const rooms: Room[] = [
   {
-    id: 'deluxe-ocean',
-    name: 'Deluxe Ocean View',
-    description: 'Spacious elegance with panoramic Arabian Sea vistas and private balcony.',
-    price: 28000,
-    image: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    features: ['55 sqm', 'King Bed', 'Ocean View', 'Private Balcony'],
+    id: '2beds-combo',
+    name: '2 Beds Combo (Free Cancellation)',
+    description: 'Fits 2 adults. Includes kitchenette access, free cancellation up to 24 hrs before check‑in.',
+    price: 1598,
+    image: 'https://juggler.makemytrip.com/juggler/stream/key/platform-ugc-01KT6ZHFEASY7FQQ76FBJ4FR71/01KT6ZHFEASY7FQQ76FBJ4FR71.jpg',
+    features: ['2 Beds', 'Free Cancellation', 'Kitchenette', 'Wi‑Fi'],
   },
   {
-    id: 'luxury-suite',
-    name: 'Luxury Suite',
-    description: 'Separate living area, marble bathroom with soaking tub, and butler service.',
-    price: 52000,
-    image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    features: ['85 sqm', 'King Bed', 'Living Room', 'Butler Service'],
+    id: '8bed-dorm',
+    name: '8‑Bed Mixed Dormitory (per bed)',
+    description: 'Shared dormitory with Wi‑Fi, private bathroom, mineral water, electronic safe, hot & cold water, toiletries.',
+    price: 799,
+    image: 'https://juggler.makemytrip.com/juggler/stream/key/platform-ugc-01KT6ZHFG7ZS9YBFEHAQ5T5YPD/01KT6ZHFG7ZS9YBFEHAQ5T5YPD.jpg',
+    features: ['8‑Bed Dorm', 'Wi‑Fi', 'Bathroom', 'Free Cancellation'],
   },
   {
-    id: 'presidential',
-    name: 'Presidential Suite',
-    description: 'Ultimate luxury with two bedrooms, private pool, dining room, and 24-hr concierge.',
-    price: 125000,
-    image: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    features: ['180 sqm', 'Two King Beds', 'Private Pool', 'Concierge'],
+    id: '6bed-dorm',
+    name: '6‑Bed Mixed Dormitory (per bed)',
+    description: 'Shared dormitory with Wi‑Fi, private bathroom, mineral water, electronic safe, hot & cold water, toiletries.',
+    price: 799,
+    image: 'https://juggler.makemytrip.com/juggler/stream/key/platform-ugc-01KT6ZHFG7ZS9YBFEHAQ5T5YPD/01KT6ZHFG7ZS9YBFEHAQ5T5YPD.jpg',
+    features: ['6‑Bed Dorm', 'Wi‑Fi', 'Bathroom', 'Free Cancellation'],
+  },
+  {
+    id: 'couple-room',
+    name: 'Couple Room (Double Bed)',
+    description: 'Private double‑bed room with Wi‑Fi, bathroom, electronic safe, hot & cold water, toiletries, towels. Free cancellation up to 24 hrs before check‑in.',
+    price: 3199,
+    image: 'https://juggler.makemytrip.com/juggler/stream/key/platform-ugc-01KT6ZHFEASY7FQQ76FBJ4FR71/01KT6ZHFEASY7FQQ76FBJ4FR71.jpg',
+    features: ['Double Bed', 'Private Bathroom', 'Free Cancellation', 'Wi‑Fi'],
   },
 ];
 
@@ -58,12 +73,12 @@ export default function FeaturedRooms() {
             id="rooms-heading"
             className="font-heading text-4xl md:text-5xl font-light text-charcoal mb-4"
           >
-            Curated{' '}
-            <span className="font-medium">Suites</span>
-            & Villas
+            Hostel{' '}
+            <span className="font-medium">Rooms</span>
+            & Dorms
           </h2>
           <p className="text-softgray max-w-2xl mx-auto text-lg">
-            Each residence is a masterpiece of design, offering unparalleled comfort and breathtaking views.
+            Affordable, clean and comfortable stays near Surathkal Beach with flexible cancellation.
           </p>
         </motion.div>
 
