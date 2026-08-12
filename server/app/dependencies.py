@@ -40,7 +40,7 @@ security = HTTPBearer(auto_error=False)
 
 def get_current_user_token(
     credentials: Optional[HTTPAuthorizationCredentials] = Depends(security)
-) -> str:
+) -> Optional[str]:
     """
     Extract JWT token from Authorization header.
     
@@ -48,17 +48,10 @@ def get_current_user_token(
         credentials: HTTP Bearer credentials from header
         
     Returns:
-        str: JWT token
-        
-    Raises:
-        HTTPException: If no token provided or invalid format
+        str: JWT token, or None if not provided
     """
     if credentials is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Authorization header missing",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        return None
     
     if credentials.scheme.lower() != "bearer":
         raise HTTPException(
@@ -71,7 +64,7 @@ def get_current_user_token(
 
 
 def get_current_user(
-    token: str = Depends(get_current_user_token),
+    token: Optional[str] = Depends(get_current_user_token),
     db: Session = Depends(get_db)
 ) -> User:
     """
@@ -84,7 +77,7 @@ def get_current_user(
     4. Returns the User object
     
     Args:
-        token: JWT token from Authorization header
+        token: JWT token from Authorization header (optional)
         db: Database session
         
     Returns:
@@ -93,6 +86,13 @@ def get_current_user(
     Raises:
         HTTPException: If token invalid, user not found, or user inactive
     """
+    if token is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authorization header missing",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
     # Decode token
     token_data = decode_token(token)
     
@@ -184,7 +184,7 @@ def get_current_staff_user(
 
 
 def get_optional_current_user(
-    token: str = Depends(get_current_user_token),
+    token: Optional[str] = Depends(get_current_user_token),
     db: Session = Depends(get_db)
 ) -> Optional[User]:
     """
@@ -200,6 +200,9 @@ def get_optional_current_user(
     Returns:
         User if authenticated, None otherwise
     """
+    if token is None:
+        return None
+    
     try:
         token_data = decode_token(token)
         user = db.query(User).filter(User.id == token_data.user_id).first()
