@@ -2,8 +2,11 @@ import { Link } from "react-router-dom";
 import { rooms } from "../data/rooms";
 import { hotel } from "../data/hotel";
 import { PageHero } from "../components/PageHero";
+import { useState } from "react";
+import RoomModal from "../components/RoomModal";
 
 export default function Rooms() {
+  const [selectedRoom, setSelectedRoom] = useState<typeof rooms[0] | null>(null);
   return (
     <>
       <PageHero
@@ -61,12 +64,16 @@ export default function Rooms() {
                     )}
                     <span className="text-softgray text-sm ml-2">/ night</span>
                   </div>
-                  <Link
-                    to={`/rooms/${room.id}`}
-                    className="px-4 py-2 bg-charcoal text-warmwhite rounded-full font-medium text-sm hover:bg-royalgold hover:text-charcoal transition-colors"
-                  >
-                    View Details
-                  </Link>
+<Link
+                      to={`/rooms/${room.id}`}
+                      className="px-4 py-2 bg-charcoal text-warmwhite rounded-full font-medium text-sm hover:bg-royalgold hover:text-charcoal transition-colors"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setSelectedRoom(room);
+                      }}
+                    >
+                      View Details
+                    </Link>
                 </div>
               </div>
             </article>
@@ -74,6 +81,13 @@ export default function Rooms() {
         </div>
       </div>
     </section>
+
+      {selectedRoom && (
+        <RoomModal
+          room={selectedRoom}
+          onClose={() => setSelectedRoom(null)}
+        />
+      )}
     </>
   );
 }
