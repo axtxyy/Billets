@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, MapPin, Star } from 'lucide-react';
+import { useState } from 'react';
+import RoomModal from './RoomModal';
 
 export interface Room {
   id: string;
@@ -53,6 +55,8 @@ const rooms: Room[] = [
 ];
 
 export default function FeaturedRooms() {
+  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+
   return (
     <section
       id="rooms"
@@ -138,17 +142,18 @@ export default function FeaturedRooms() {
                     </span>
                     <span className="text-softgray text-sm ml-2">/ night</span>
                   </div>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="group relative px-6 py-2.5 bg-charcoal text-warmwhite rounded-full font-medium text-sm hover:bg-royalgold hover:text-charcoal transition-colors flex items-center gap-2 overflow-hidden"
-                  >
-                    View Details
-                    <ArrowRight
-                      className="w-4 h-4 transition-transform group-hover:translate-x-1"
-                      aria-hidden="true"
-                    />
-                  </motion.button>
+<motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setSelectedRoom(room)}
+                      className="group relative px-6 py-2.5 bg-charcoal text-warmwhite rounded-full font-medium text-sm hover:bg-royalgold hover:text-charcoal transition-colors flex items-center gap-2 overflow-hidden"
+                    >
+                      View Details
+                      <ArrowRight
+                        className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                        aria-hidden="true"
+                      />
+                    </motion.button>
                 </div>
               </div>
             </motion.article>
@@ -167,6 +172,13 @@ export default function FeaturedRooms() {
           </button>
         </motion.div>
       </div>
+
+      {selectedRoom && (
+        <RoomModal
+          room={selectedRoom}
+          onClose={() => setSelectedRoom(null)}
+        />
+      )}
     </section>
   );
 }
