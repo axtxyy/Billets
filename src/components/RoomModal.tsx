@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
-import type { Room } from "./FeaturedRooms";
+import type { RoomDisplay } from "../data/roomTypes";
 
 interface RoomModalProps {
-  room: Room;
+  room: RoomDisplay;
   onClose: () => void;
 }
 

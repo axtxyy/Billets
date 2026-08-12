@@ -175,7 +175,6 @@ class User(Base):
 
     # Table constraints
     __table_args__ = (
-        Index("ix_users_email", "email"),
         Index("ix_users_role", "role"),
     )
 
@@ -564,7 +563,6 @@ class NewsletterSubscriber(Base):
 
     # Table constraints
     __table_args__ = (
-        Index("ix_newsletter_subscribers_email", "email"),
         Index("ix_newsletter_subscribers_is_active", "is_active"),
     )
 

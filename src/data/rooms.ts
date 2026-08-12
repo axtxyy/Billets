@@ -1,6 +1,6 @@
-import type { Room } from "../components/FeaturedRooms";
+import type { RoomDisplay } from "./roomTypes";
 
-export const rooms: Room[] = [
+export const rooms: RoomDisplay[] = [
   {
     id: "2beds-combo",
     name: "2 Beds Combo (Free Cancellation)",
