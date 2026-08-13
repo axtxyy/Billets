@@ -82,7 +82,7 @@ def initiate_payment(
             "currency": "USD",
             "provider": "razorpay",
             "razorpay_order_id": "order_abc123",
-            "razorpay_key_id": "rzp_test_..."
+            "razorpay_key_id": "razorpay_key_id_from_env"
         }
     }
     ```
@@ -99,7 +99,7 @@ def initiate_payment(
             "currency": "USD",
             "provider": "stripe",
             "stripe_client_secret": "pi_abc123_secret_...",
-            "stripe_publishable_key": "pk_test_..."
+            "stripe_publishable_key": "pk_test_publishable_key_from_env"
         }
     }
     ```
