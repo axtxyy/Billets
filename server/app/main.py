@@ -139,6 +139,8 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         field = " -> ".join(str(x) for x in error["loc"])
         errors.append(f"{field}: {error['msg']}")
     
+    logger.error(f"Validation error for {request.method} {request.url}: {errors}")
+    
     return JSONResponse(
         status_code=422,
         content=error_response(
@@ -246,6 +248,7 @@ from app.routers import (
     contact,
     newsletter,
     auth as auth_router,
+    hotel as hotel_router,
 )
 
 # Include routers with prefixes and tags
@@ -261,6 +264,7 @@ app.include_router(amenities.router, prefix="/api/amenities", tags=["Amenities"]
 app.include_router(reviews.router, prefix="/api/reviews", tags=["Reviews"])
 app.include_router(contact.router, prefix="/api/contact", tags=["Contact"])
 app.include_router(newsletter.router, prefix="/api/newsletter", tags=["Newsletter"])
+app.include_router(hotel_router.router, prefix="/api/hotel", tags=["Hotel Info"])
 
 
 # ============================================================================

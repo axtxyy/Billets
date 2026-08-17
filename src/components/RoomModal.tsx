@@ -1,13 +1,80 @@
 import { motion } from "framer-motion";
-import { X } from "lucide-react";
+import { X, Calendar, Users, CreditCard, AlertCircle } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { bookingsApi } from "../services/api";
 import type { RoomDisplay } from "../data/roomTypes";
 
 interface RoomModalProps {
   room: RoomDisplay;
   onClose: () => void;
+  checkIn?: string;
+  checkOut?: string;
+  guests?: number;
 }
 
-export default function RoomModal({ room, onClose }: RoomModalProps) {
+export default function RoomModal({ room, onClose, checkIn, checkOut, guests = 2 }: RoomModalProps) {
+  const { accessToken, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const [bookingLoading, setBookingLoading] = useState(false);
+  const [bookingError, setBookingError] = useState<string | null>(null);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+
+  const handleBook = async () => {
+    if (!checkIn || !checkOut) {
+      setBookingError("Please select check-in and check-out dates first");
+      return;
+    }
+
+    if (!isAuthenticated || !accessToken) {
+      setShowLoginPrompt(true);
+      return;
+    }
+
+    setBookingLoading(true);
+    setBookingError(null);
+
+    try {
+      const response = await bookingsApi.create(
+        {
+          room_id: parseInt(room.id, 10),
+          check_in_date: checkIn,
+          check_out_date: checkOut,
+          adults: guests,
+          children: 0,
+          special_requests: "",
+        },
+        accessToken
+      );
+
+      if (response.success) {
+        onClose();
+        navigate("/my-bookings", { state: { success: "Booking created successfully!" } });
+      } else {
+        setBookingError(response.message || "Failed to create booking");
+      }
+    } catch (err: any) {
+      setBookingError(err.message || "Failed to create booking");
+    } finally {
+      setBookingLoading(false);
+    }
+  };
+
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString("en-IN", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  const nights = checkIn && checkOut
+    ? Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24))
+    : 0;
+
+  const totalPrice = nights * room.price;
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -130,9 +197,102 @@ export default function RoomModal({ room, onClose }: RoomModalProps) {
               </div>
             )}
 
+            {/* Booking Summary */}
+            {checkIn && checkOut && nights > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 p-4 bg-warmwhite rounded-xl border border-softgray/20"
+              >
+                <h3 className="font-heading text-lg font-medium text-charcoal mb-3">Booking Summary</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between text-softgray">
+                    <span>{nights} night{nights !== 1 ? "s" : ""} × ₹{room.price.toLocaleString()}</span>
+                    <span>₹{totalPrice.toLocaleString()}</span>
+                  </div>
+                  {room.taxesAndFees && (
+                    <div className="flex justify-between text-softgray">
+                      <span>Taxes & fees ({nights} nights)</span>
+                      <span>₹{(room.taxesAndFees * nights).toLocaleString()}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between border-t border-softgray/30 pt-2 font-medium text-charcoal">
+                    <span>Total</span>
+                    <span>₹{(totalPrice + (room.taxesAndFees ? room.taxesAndFees * nights : 0)).toLocaleString()}</span>
+                  </div>
+                </div>
+                <div className="mt-3 flex items-center gap-2 text-xs text-softgray">
+                  <Calendar className="w-3 h-3" />
+                  <span>{formatDate(checkIn)} - {formatDate(checkOut)}</span>
+                  <Users className="w-3 h-3" />
+                  <span>{guests} guest{guests !== 1 ? "s" : ""}</span>
+                </div>
+              </motion.div>
+            )}
+
+            {showLoginPrompt && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl"
+              >
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5" />
+                  <div>
+                    <p className="text-amber-800 font-medium">Login required to book</p>
+                    <p className="text-amber-700 text-sm mt-1">Please log in or create an account to complete your booking.</p>
+                    <div className="flex gap-2 mt-3">
+                      <button
+                        onClick={() => { setShowLoginPrompt(false); navigate("/login"); }}
+                        className="px-4 py-2 bg-amber-600 text-white rounded-lg font-medium hover:bg-amber-700 transition-colors"
+                      >
+                        Log In
+                      </button>
+                      <button
+                        onClick={() => { setShowLoginPrompt(false); navigate("/register"); }}
+                        className="px-4 py-2 border border-amber-300 text-amber-800 rounded-lg font-medium hover:bg-amber-50 transition-colors"
+                      >
+                        Sign Up
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {bookingError && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl"
+              >
+                <div className="flex items-center gap-2 text-red-700">
+                  <AlertCircle className="w-5 h-5" />
+                  <span className="text-sm">{bookingError}</span>
+                </div>
+              </motion.div>
+            )}
+
             <div className="flex gap-4">
-              <button className="flex-1 py-3 bg-charcoal text-warmwhite rounded-full font-medium text-lg hover:bg-royalgold hover:text-charcoal transition-colors">
-                Book Now
+              <button
+                onClick={handleBook}
+                disabled={bookingLoading || !checkIn || !checkOut}
+                className="flex-1 py-3 bg-charcoal text-warmwhite rounded-full font-medium text-lg hover:bg-royalgold hover:text-charcoal transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {bookingLoading ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    Booking...
+                  </>
+                ) : (
+                  <>
+                    <CreditCard className="w-5 h-5" />
+                    Book Now
+                  </>
+                )}
               </button>
               <a
                 href="/contact"

@@ -77,8 +77,11 @@ def list_gallery_images(
     total = query.count()
     images = query.order_by(GalleryImage.display_order, GalleryImage.created_at.desc()).offset((page - 1) * size).limit(size).all()
     
+    # Convert to response schemas
+    image_responses = [GalleryImageResponse.model_validate(img) for img in images]
+    
     return success_response(
-        data=build_paginated_response(images, total, page, size),
+        data=build_paginated_response(image_responses, total, page, size),
         message="Gallery images retrieved",
     )
 
@@ -121,7 +124,7 @@ def get_gallery_image(
             detail="Image not found",
         )
     
-    return success_response(data=image, message="Image retrieved")
+    return success_response(data=GalleryImageResponse.model_validate(image), message="Image retrieved")
 
 
 @router.post("", response_model=dict, status_code=status.HTTP_201_CREATED, summary="Upload gallery image (admin)")

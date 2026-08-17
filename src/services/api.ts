@@ -89,6 +89,35 @@ export interface Hotel {
   mapEmbedUrl: string;
 }
 
+export interface Booking {
+  id: number;
+  user_id: number;
+  room_id: number;
+  check_in_date: string;
+  check_out_date: string;
+  adults: number;
+  children: number;
+  total_nights: number;
+  price_per_night: number;
+  subtotal: number;
+  tax_amount: number;
+  discount_amount: number;
+  total_amount: number;
+  status: string;
+  special_requests: string | null;
+  cancellation_reason: string | null;
+  cancelled_at: string | null;
+  created_at: string;
+  updated_at: string;
+  room?: {
+    id: number;
+    name: string;
+    room_type: string;
+    primary_image: string | null;
+    images?: Array<{ image_url: string; is_primary: boolean }>;
+  };
+}
+
 const API_BASE = '/api';
 
 async function fetchApi<T>(endpoint: string, options?: RequestInit): Promise<T> {
@@ -152,64 +181,80 @@ export const amenitiesApi = {
 };
 
 export const galleryApi = {
-  async getAll(): Promise<ApiResponse<Array<{ id: number; title: string; description: string | null; image_url: string; category: string | null; display_order: number; is_published: boolean; created_at: string }>>> {
+  async getAll(): Promise<ApiResponse<any>> {
     return fetchApi<ApiResponse<any>>('/gallery');
+  },
+};
+
+export const eventsApi = {
+  async getAll(params?: { page?: number; size?: number; status?: string; event_type?: string }): Promise<ApiResponse<any>> {
+    const searchParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          searchParams.append(key, String(value));
+        }
+      });
+    }
+    const query = searchParams.toString();
+    return fetchApi<ApiResponse<any>>(`/events${query ? `?${query}` : ''}`);
+  },
+
+  async getById(id: number): Promise<ApiResponse<any>> {
+    return fetchApi<ApiResponse<any>>(`/events/${id}`);
+  },
+
+  async create(data: {
+    event_name: string;
+    event_type: string;
+    event_date: string;
+    start_time: string;
+    end_time: string;
+    expected_guests: number;
+    contact_email: string;
+    contact_phone?: string;
+    special_requirements?: string;
+  }): Promise<ApiResponse<any>> {
+    return fetchApi<ApiResponse<any>>('/events', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
   },
 };
 
 export const hotelApi = {
   async getInfo(): Promise<Hotel> {
-    const response = await fetch(`${API_BASE}/`);
-    if (!response.ok) throw new Error('Failed to fetch hotel info');
-    await response.json();
-    return {
-      name: 'Billet, Mangalore',
-      tagline: 'Budget Hostel near Surathkal Beach',
-      description: 'Located just 150 meters from the pristine sands of Surathkal Beach—one of the cleanest stretches of coastline you\'ll ever find—Billet offers affordable, clean and comfortable stays with a vibrant community vibe.',
-      logo: '/favicon.svg',
-      heroImage: 'https://juggler.makemytrip.com/juggler/stream/key/platform-ugc-01KT6ZHFEASY7FQQ76FBJ4FR71/01KT6ZHFEASY7FQQ76FBJ4FR71.jpg',
-      address: {
-        line1: 'Dodda Kopla, Surathkal',
-        line2: 'Billet, Mangaluru, Karnataka 575014',
-        city: 'Mangalore',
-        state: 'Karnataka',
-        country: 'India',
-        pincode: '575014',
-      },
-      phone: '+91 98765 43210',
-      email: 'stay@billetmangalore.com',
-      checkIn: '14:00',
-      checkOut: '11:00',
-      policies: [
-        'Unmarried couples allowed. Local IDs accepted.',
-        'Primary guest must be at least 18 years old.',
-        'Groups with only male guests are allowed.',
-        'Passport, Aadhaar, Driving License, Govt. ID accepted.',
-        'Pets are not allowed.',
-      ],
-      amenities: [
-        'Free Wi‑Fi',
-        'Kitchenette access',
-        'Parking',
-        'Power backup',
-        'Hot & cold water',
-        'Electronic safe',
-        'Mineral water',
-        'Toiletries',
-      ],
-      nearby: [
-        { name: 'Surathkal Beach', distance: '1.5 km' },
-        { name: 'Mangalore International Airport', distance: '17.8 km' },
-        { name: 'Surathkal Railway Station', distance: '3.8 km' },
-        { name: 'Mangalore Central Railway Station', distance: '19 km' },
-      ],
-      social: {
-        facebook: 'https://facebook.com/billetmangalore',
-        instagram: 'https://instagram.com/billetmangalore',
-        twitter: 'https://twitter.com/billetmangalore',
-      },
-      mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.123456789!2d74.795!3d13.018!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba35b1c2d3e4f5f%3A0x123456789abcdef!2sBillet%2C%20Mangalore!5e0!3m2!1sen!2sin!4v1234567890',
-    };
+    const response = await fetchApi<ApiResponse<Hotel>>('/hotel/info');
+    if (!response.success || !response.data) {
+      throw new Error(response.message || 'Failed to fetch hotel info');
+    }
+    return response.data;
+  },
+};
+export const diningApi = {
+  async createReservation(data: {
+    customer_name: string;
+    email: string;
+    phone: string;
+    reservation_date: string;
+    reservation_time: string;
+    guests: number;
+    notes?: string;
+  }): Promise<ApiResponse<any>> {
+    return fetchApi<ApiResponse<any>>("/dining/reservation", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  },
+
+  async getReservations(token?: string): Promise<ApiResponse<any>> {
+    return fetchApi<ApiResponse<any>>("/dining/reservations", {
+      headers: token
+        ? {
+            Authorization: `Bearer ${token}`,
+          }
+        : {},
+    });
   },
 };
 
@@ -232,6 +277,14 @@ export const authApi = {
     return fetchApi<ApiResponse<any>>('/auth/refresh', {
       method: 'POST',
       body: JSON.stringify({ refresh_token }),
+    });
+  },
+
+  async getMe(token: string): Promise<ApiResponse<any>> {
+    return fetchApi<ApiResponse<any>>('/auth/me', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
     });
   },
 };
@@ -302,6 +355,7 @@ export const healthApi = {
 
 export function getImageUrl(path: string | null): string {
   if (!path) return '';
-  if (path.startsWith('http')) return path;
+  if (path.startsWith('http') || path.startsWith('https')) return path;
+  if (path.startsWith('/')) return path;
   return `${API_BASE}/uploads/${path}`;
 }

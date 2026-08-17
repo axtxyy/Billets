@@ -132,7 +132,7 @@ def list_rooms(
         query = query.filter(Room.is_featured == is_featured)
     
     total = query.count()
-    rooms = query.order_by(Room.display_order, Room.created_at.desc()).offset((page - 1) * size).limit(size).all()
+    rooms = query.order_by(Room.created_at.desc()).offset((page - 1) * size).limit(size).all()
     
     # Build response with primary image
     room_responses = []
@@ -359,6 +359,33 @@ def search_rooms(
         ),
         message=f"Found {total} available rooms",
     )
+
+
+# ============================================================================
+# Amenities Endpoints (must come before /{room_id} to avoid route conflicts)
+# ============================================================================
+
+@router.get("/amenities", response_model=dict, summary="List amenities")
+def list_amenities(
+    category: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    """
+    List all amenities.
+    
+    Public endpoint.
+    """
+    query = db.query(Amenity).filter(Amenity.is_active == True)
+    
+    if category:
+        query = query.filter(Amenity.category == category)
+    
+    amenities = query.order_by(Amenity.name).all()
+    
+    # Convert to response schemas
+    amenity_responses = [AmenityResponse.model_validate(a) for a in amenities]
+    
+    return success_response(data=amenity_responses, message="Amenities retrieved")
 
 
 @router.get("/{room_id}", response_model=dict, summary="Get room details")
@@ -657,33 +684,6 @@ def delete_room_image(
     db.commit()
     
     return success_response(message="Image deleted successfully")
-
-
-# ============================================================================
-# Amenities Endpoints
-# ============================================================================
-
-@router.get("/amenities", response_model=dict, summary="List amenities")
-def list_amenities(
-    category: Optional[str] = None,
-    is_active: bool = True,
-    db: Session = Depends(get_db)
-):
-    """
-    List all amenities.
-    
-    Public endpoint.
-    """
-    query = db.query(Amenity)
-    
-    if is_active is not None:
-        query = query.filter(Amenity.is_active == is_active)
-    if category:
-        query = query.filter(Amenity.category == category)
-    
-    amenities = query.order_by(Amenity.name).all()
-    
-    return success_response(data=amenities, message="Amenities retrieved")
 
 
 @router.post("/amenities", response_model=dict, status_code=status.HTTP_201_CREATED, summary="Create amenity (admin)")

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
-import { Calendar, Users, ChevronDown, Search } from 'lucide-react';
+import { Calendar, Users, ChevronDown, Search, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 type RoomType = 'deluxe' | 'suite' | 'presidential' | 'ocean-view';
 
@@ -19,6 +20,7 @@ const roomTypes: { value: RoomType; label: string }[] = [
 ];
 
 export default function BookingCard() {
+  const navigate = useNavigate();
   const [data, setData] = useState<BookingData>({
     checkIn: '',
     checkOut: '',
@@ -33,8 +35,18 @@ export default function BookingCard() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Search:', data);
-    // TODO: integrate with booking API
+    const checkIn = data.checkIn || new Date().toISOString().split('T')[0];
+    const checkOut = data.checkOut || new Date(Date.parse(checkIn) + 86400000).toISOString().split('T')[0];
+    
+    const searchParams = new URLSearchParams({
+      checkIn,
+      checkOut,
+      adults: data.guests.toString(),
+      children: '0',
+      roomType: data.roomType,
+    });
+    
+    navigate(`/search?${searchParams.toString()}`);
   };
 
   return (
@@ -82,6 +94,7 @@ export default function BookingCard() {
                     focused === 'checkIn' ? 'border-royalgold' : 'border-softgray/30 hover:border-royalgold/50'
                   }`}
                   aria-label="Check-in date"
+                  min={new Date().toISOString().split('T')[0]}
                 />
               </div>
             </motion.div>
@@ -105,7 +118,7 @@ export default function BookingCard() {
                   value={data.checkOut}
                   onChange={e => handleChange('checkOut', e.target.value)}
                   onFocus={() => setFocused('checkOut')}
-                  min={data.checkIn || undefined}
+                  min={data.checkIn || new Date().toISOString().split('T')[0]}
                   className={`w-full pl-12 pr-4 py-3 bg-warmwhite border-2 rounded-xl text-charcoal placeholder-softgray/50 focus:outline-none focus:ring-2 focus:ring-royalgold/50 transition-all ${
                     focused === 'checkOut' ? 'border-royalgold' : 'border-softgray/30 hover:border-royalgold/50'
                   }`}
@@ -186,6 +199,7 @@ export default function BookingCard() {
             >
               <Search className="w-5 h-5" aria-hidden="true" />
               Check Availability
+              <ArrowRight className="w-5 h-5" aria-hidden="true" />
             </motion.button>
           </div>
         </motion.form>

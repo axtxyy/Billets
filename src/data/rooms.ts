@@ -9,10 +9,10 @@ export const rooms: RoomDisplay[] = [
     price: 1598,
     originalPrice: 1998,
     taxesAndFees: 192,
-    image:
-      "https://juggler.makemytrip.com/juggler/stream/key/platform-ugc-01KT6ZHFEASY7FQQ76FBJ4FR71/01KT6ZHFEASY7FQQ76FBJ4FR71.jpg",
+    image: "/images/rooms/4 beds.avif",
     gallery: [
-      "https://juggler.makemytrip.com/juggler/stream/key/platform-ugc-01KT6ZHFEASY7FQQ76FBJ4FR71/01KT6ZHFEASY7FQQ76FBJ4FR71.jpg",
+      "/images/rooms/4 beds.avif",
+      "/images/rooms/Single Luxury.avif",
     ],
     features: ["2 Beds", "Free Cancellation", "Kitchenette", "Wi‑Fi"],
     capacity: 2,
@@ -31,10 +31,10 @@ export const rooms: RoomDisplay[] = [
     price: 799,
     originalPrice: 999,
     taxesAndFees: 0,
-    image:
-      "https://juggler.makemytrip.com/juggler/stream/key/platform-ugc-01KT6ZHFG7ZS9YBFEHAQ5T5YPD/01KT6ZHFG7ZS9YBFEHAQ5T5YPD.jpg",
+    image: "/images/rooms/8 beds.avif",
     gallery: [
-      "https://juggler.makemytrip.com/juggler/stream/key/platform-ugc-01KT6ZHFG7ZS9YBFEHAQ5T5YPD/01KT6ZHFG7ZS9YBFEHAQ5T5YPD.jpg",
+      "/images/rooms/8 beds.avif",
+      "/images/rooms/Common Area.avif",
     ],
     features: ["8‑Bed Dorm", "Wi‑Fi", "Bathroom", "Free Cancellation"],
     capacity: 1,
@@ -53,10 +53,10 @@ export const rooms: RoomDisplay[] = [
     price: 799,
     originalPrice: 999,
     taxesAndFees: 0,
-    image:
-      "https://juggler.makemytrip.com/juggler/stream/key/platform-ugc-01KT6ZHFG7ZS9YBFEHAQ5T5YPD/01KT6ZHFG7ZS9YBFEHAQ5T5YPD.jpg",
+    image: "/images/rooms/Common Area2.avif",
     gallery: [
-      "https://juggler.makemytrip.com/juggler/stream/key/platform-ugc-01KT6ZHFG7ZS9YBFEHAQ5T5YPD/01KT6ZHFG7ZS9YBFEHAQ5T5YPD.jpg",
+      "/images/rooms/Common Area2.avif",
+      "/images/rooms/Common Area3.avif",
     ],
     features: ["6‑Bed Dorm", "Wi‑Fi", "Bathroom", "Free Cancellation"],
     capacity: 1,
@@ -75,10 +75,10 @@ export const rooms: RoomDisplay[] = [
     price: 3199,
     originalPrice: 3999,
     taxesAndFees: 0,
-    image:
-      "https://juggler.makemytrip.com/juggler/stream/key/platform-ugc-01KT6ZHFEASY7FQQ76FBJ4FR71/01KT6ZHFEASY7FQQ76FBJ4FR71.jpg",
+    image: "/images/rooms/Single Luxury.avif",
     gallery: [
-      "https://juggler.makemytrip.com/juggler/stream/key/platform-ugc-01KT6ZHFEASY7FQQ76FBJ4FR71/01KT6ZHFEASY7FQQ76FBJ4FR71.jpg",
+      "/images/rooms/Single Luxury.avif",
+      "/images/rooms/View.webp",
     ],
     features: ["Double Bed", "Private Bathroom", "Free Cancellation", "Wi‑Fi"],
     capacity: 2,

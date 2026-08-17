@@ -1,29 +1,52 @@
-import { hotel } from "../data/hotel";
+import { useEffect, useState } from "react";
 import { PageHero } from "../components/PageHero";
 import { motion } from "framer-motion";
-
-const amenities = [
-  { icon: "📶", title: "Free WiFi", desc: "High‑speed internet throughout the property." },
-  { icon: "🏊", title: "Swimming Pool", desc: "Outdoor pool with sea view and sun loungers." },
-  { icon: "💆", title: "Spa", desc: "Relaxing treatments and wellness therapies." },
-  { icon: "🏋️", title: "Gym", desc: "Fully equipped fitness centre open 24/7." },
-  { icon: "🍽️", title: "Restaurant", desc: "Multi‑cuisine dining with local flavours." },
-  { icon: "🪑", title: "Conference Hall", desc: "Modern meeting space for up to 100 guests." },
-  { icon: "🛎️", title: "Room Service", desc: "Round‑the‑clock in‑room dining." },
-  { icon: "🧺", title: "Laundry", desc: "Same‑day laundry and dry‑cleaning service." },
-  { icon: "🅿️", title: "Parking", desc: "Complimentary secure parking for guests." },
-  { icon: "✈️", title: "Airport Pickup", desc: "Scheduled shuttle service on request." },
-  { icon: "🕐", title: "24/7 Reception", desc: "Friendly front desk available anytime." },
-  { icon: "📹", title: "CCTV Security", desc: "Full‑property surveillance for peace of mind." },
-];
+import { amenitiesApi } from "../services/api";
 
 export default function Amenities() {
+  const [amenities, setAmenities] = useState<Array<{ icon: string; title: string; desc: string }>>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    amenitiesApi.getAll().then((response) => {
+      const fetchedAmenities = (response.data || []).map((item: any) => ({
+        icon: item.icon || "",
+        title: item.name || "",
+        desc: item.description || "",
+      }));
+      setAmenities(fetchedAmenities);
+      setLoading(false);
+    }).catch((error) => {
+      console.error("Error fetching amenities:", error);
+      const fallbackAmenities = [
+        { icon: "📶", title: "Free WiFi", desc: "High‑speed internet throughout the property." },
+        { icon: "🏊", title: "Swimming Pool", desc: "Outdoor pool with sea view and sun loungers." },
+        { icon: "💆", title: "Spa", desc: "Relaxing treatments and wellness therapies." },
+        { icon: "🏋️", title: "Gym", desc: "Fully equipped fitness centre open 24/7." },
+        { icon: "🍽️", title: "Restaurant", desc: "Multi‑cuisine dining with local flavours." },
+        { icon: "🪑", title: "Conference Hall", desc: "Modern meeting space for up to 100 guests." },
+        { icon: "🛎️", title: "Room Service", desc: "Round‑the‑clock in‑room dining." },
+        { icon: "🧺", title: "Laundry", desc: "Same‑day laundry and dry‑cleaning service." },
+        { icon: "🅿️", title: "Parking", desc: "Complimentary secure parking for guests." },
+        { icon: "✈️", title: "Airport Pickup", desc: "Scheduled shuttle service on request." },
+        { icon: "🕐", title: "24/7 Reception", desc: "Friendly front desk available anytime." },
+        { icon: "📹", title: "CCTV Security", desc: "Full‑property surveillance for peace of mind." },
+      ];
+      setAmenities(fallbackAmenities);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
+    return <div className="min-h-64 flex items-center justify-center p-6">Loading amenities...</div>;
+  }
+
   return (
     <>
       <PageHero
         title="Amenities"
         subtitle="Everything you need for a comfortable and memorable stay."
-        backgroundImage={hotel.heroImage}
+        backgroundImage={"/favicon.svg"}
       />
       <section className="py-24 px-6 bg-white">
         <div className="max-w-7xl mx-auto">

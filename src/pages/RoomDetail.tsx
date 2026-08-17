@@ -1,10 +1,11 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { roomsApi, getImageUrl, type Room } from "../services/api";
 
 export default function RoomDetail() {
   const { roomId } = useParams<{ roomId: string }>();
+  const navigate = useNavigate();
   const [room, setRoom] = useState<Room | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -71,7 +72,10 @@ export default function RoomDetail() {
   const originalPrice = price * 1.25;
   const taxesAndFees = Math.round(price * 0.12);
   const features = room.amenities?.map((a: any) => a.name) || [];
-  const images = room.images?.map((img: any) => getImageUrl(img.image_url) || img.image_url) || (room.primary_image ? [getImageUrl(room.primary_image) || room.primary_image] : []);
+  // Get primary image from room images relationship
+  const primaryImg = room.images?.find((img: any) => img.is_primary);
+  const imageUrl = primaryImg?.image_url || '';
+  const images = room.images?.map((img: any) => getImageUrl(img.image_url)) || [imageUrl];
 
   return (
     <section className="py-12 px-6 bg-white">
@@ -159,7 +163,14 @@ export default function RoomDetail() {
             </div>
 
             <div className="flex gap-4">
-              <button className="flex-1 py-3 bg-charcoal text-warmwhite rounded-full font-medium text-lg hover:bg-royalgold hover:text-charcoal transition-colors">
+              <button
+                onClick={() => {
+                  const checkIn = new Date().toISOString().split('T')[0];
+                  const checkOut = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+                  navigate(`/search?checkIn=${checkIn}&checkOut=${checkOut}&adults=2&children=0&roomId=${roomId}`);
+                }}
+                className="flex-1 py-3 bg-charcoal text-warmwhite rounded-full font-medium text-lg hover:bg-royalgold hover:text-charcoal transition-colors"
+              >
                 Book Now
               </button>
               <Link

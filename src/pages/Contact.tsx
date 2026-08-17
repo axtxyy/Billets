@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { hotel } from "../data/hotel";
+import { contactApi } from "../services/api";
 import { PageHero } from "../components/PageHero";
 
 export default function Contact() {
@@ -10,8 +11,13 @@ export default function Contact() {
     e.preventDefault();
     setStatus("sending");
     try {
-      // In a real app, POST to /api/contact
-      await new Promise((r) => setTimeout(r, 1000));
+      await contactApi.submit({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        subject: "General Inquiry",
+        message: form.message,
+      });
       setStatus("success");
       setForm({ name: "", email: "", phone: "", message: "" });
     } catch {

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { PageHero } from "../components/PageHero";
 import RoomModal from "../components/RoomModal";
-import { roomsApi, hotelApi, type Room, getImageUrl } from "../services/api";
+import { roomsApi, hotelApi, type Room } from "../services/api";
 import type { RoomDisplay } from "../data/roomTypes";
 import type { Hotel } from "../services/api";
 
@@ -24,24 +24,30 @@ export default function Rooms() {
         ]);
 
         if (roomsResponse.success && roomsResponse.data) {
-          const mappedRooms: RoomDisplay[] = roomsResponse.data.items.map((room: Room) => ({
-            id: String(room.id),
-            name: room.name,
-            description: room.description || '',
-            price: room.price_per_night,
-            originalPrice: room.price_per_night * 1.25,
-            taxesAndFees: Math.round(room.price_per_night * 0.12),
-            image: getImageUrl(room.primary_image) || room.primary_image || '',
-            gallery: room.primary_image ? [getImageUrl(room.primary_image) || room.primary_image] : [],
-            features: room.amenities?.map((a: any) => a.name) || [],
-            capacity: room.capacity,
-            bedType: room.bed_type || undefined,
-            cancellation: 'Free cancellation till 24 hrs before check-in',
-            policies: [
-              'Book with ₹0 payment – pay before check-in to avoid auto-cancellation',
-              '100% Refundable',
-            ],
-          }));
+          const mappedRooms: RoomDisplay[] = roomsResponse.data.items.map((room: Room) => {
+            // Get primary image from room images relationship
+            const primaryImg = room.images?.find((img: any) => img.is_primary);
+            const imageUrl = primaryImg?.image_url || room.primary_image;
+            
+            return {
+              id: String(room.id),
+              name: room.name,
+              description: room.description || '',
+              price: room.price_per_night,
+              originalPrice: room.price_per_night * 1.25,
+              taxesAndFees: Math.round(room.price_per_night * 0.12),
+              image: imageUrl || '',
+              gallery: imageUrl ? [imageUrl] : [],
+              features: room.amenities?.map((a: any) => a.name) || [],
+              capacity: room.capacity,
+              bedType: room.bed_type || undefined,
+              cancellation: 'Free cancellation till 24 hrs before check-in',
+              policies: [
+                'Book with ₹0 payment – pay before check-in to avoid auto-cancellation',
+                '100% Refundable',
+              ],
+            };
+          });
           setRooms(mappedRooms);
         }
 

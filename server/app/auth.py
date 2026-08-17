@@ -34,9 +34,9 @@ from app.schemas import TokenData, UserRole
 
 
 # Password hashing context
-# bcrypt is the recommended algorithm for password hashing
-# rounds=12 provides good security without being too slow
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Using sha256_crypt as bcrypt has compatibility issues
+# This provides secure password hashing with good performance
+pwd_context = CryptContext(schemes=["sha256_crypt"], deprecated="auto")
 
 
 def hash_password(password: str) -> str:

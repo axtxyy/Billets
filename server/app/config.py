@@ -43,7 +43,7 @@ class Settings(BaseSettings):
     PORT: int = 8000
     
     # Database
-    DATABASE_URL: str = "postgresql://postgres:postgres@localhost:5432/billets"
+    DATABASE_URL: str = "sqlite:///./billets.db"
     
     # JWT Authentication
     SECRET_KEY: str = "your-super-secret-key-change-in-production"
@@ -78,6 +78,50 @@ class Settings(BaseSettings):
     
     # Frontend URL (for email links)
     FRONTEND_URL: str = "http://localhost:5173"
+    
+    # Hotel Info
+    HOTEL_NAME: str = "Billet, Mangalore"
+    HOTEL_TAGLINE: str = "Budget Hostel near Surathkal Beach"
+    HOTEL_DESCRIPTION: str = "Located just 150 meters from the pristine sands of Surathkal Beach—one of the cleanest stretches of coastline you'll ever find—Billet offers affordable, clean and comfortable stays with a vibrant community vibe."
+    HOTEL_LOGO: str = "/favicon.svg"
+    HOTEL_HERO_IMAGE: str = "https://juggler.makemytrip.com/juggler/stream/key/platform-ugc-01KT6ZHFEASY7FQQ76FBJ4FR71/01KT6ZHFEASY7FQQ76FBJ4FR71.jpg"
+    HOTEL_ADDRESS_LINE1: str = "Dodda Kopla, Surathkal"
+    HOTEL_ADDRESS_LINE2: str = "Billet, Mangaluru, Karnataka 575014"
+    HOTEL_CITY: str = "Mangalore"
+    HOTEL_STATE: str = "Karnataka"
+    HOTEL_COUNTRY: str = "India"
+    HOTEL_PINCODE: str = "575014"
+    HOTEL_PHONE: str = "+91 98765 43210"
+    HOTEL_EMAIL: str = "stay@billetmangalore.com"
+    HOTEL_CHECK_IN: str = "14:00"
+    HOTEL_CHECK_OUT: str = "11:00"
+    HOTEL_POLICIES: List[str] = [
+        "Unmarried couples allowed. Local IDs accepted.",
+        "Primary guest must be at least 18 years old.",
+        "Groups with only male guests are allowed.",
+        "Passport, Aadhaar, Driving License, Govt. ID accepted.",
+        "Pets are not allowed.",
+    ]
+    HOTEL_AMENITIES: List[str] = [
+        "Free Wi‑Fi",
+        "Kitchenette access",
+        "Parking",
+        "Power backup",
+        "Hot & cold water",
+        "Electronic safe",
+        "Mineral water",
+        "Toiletries",
+    ]
+    HOTEL_NEARBY: List[str] = [
+        "Surathkal Beach:1.5 km",
+        "Mangalore International Airport:17.8 km",
+        "Surathkal Railway Station:3.8 km",
+        "Mangalore Central Railway Station:19 km",
+    ]
+    HOTEL_SOCIAL_FACEBOOK: str = "https://facebook.com/billetmangalore"
+    HOTEL_SOCIAL_INSTAGRAM: str = "https://instagram.com/billetmangalore"
+    HOTEL_SOCIAL_TWITTER: str = "https://twitter.com/billetmangalore"
+    HOTEL_MAP_EMBED_URL: str = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.123456789!2d74.795!3d13.018!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba35b1c2d3e4f5f%3A0x123456789abcdef!2sBillet%2C%20Mangalore!5e0!3m2!1sen!2sin!4v1234567890"
     
     class Config:
         env_file = ".env"

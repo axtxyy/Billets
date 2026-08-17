@@ -26,6 +26,31 @@ app.add_middleware(
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
 
+# Include API routers
+from app.routers import (
+    auth,
+    rooms,
+    bookings,
+    payments,
+    events,
+    dining,
+    gallery,
+    reviews,
+    newsletter,
+    contact,
+)
+
+app.include_router(auth.router, prefix="/auth", tags=["auth"])
+app.include_router(rooms.router, prefix="/rooms", tags=["rooms"])
+app.include_router(bookings.router, prefix="/bookings", tags=["bookings"])
+app.include_router(payments.router, prefix="/payments", tags=["payments"])
+app.include_router(events.router, prefix="/events", tags=["events"])
+app.include_router(dining.router, prefix="/dining", tags=["dining"])
+app.include_router(gallery.router, prefix="/gallery", tags=["gallery"])
+app.include_router(reviews.router, prefix="/reviews", tags=["reviews"])
+app.include_router(newsletter.router, prefix="/newsletter", tags=["newsletter"])
+app.include_router(contact.router, prefix="/contact", tags=["contact"])
+
 
 @app.get("/")
 def root():

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { Mail, Check, Loader2 } from 'lucide-react';
+import { newsletterApi } from '../services/api';
 
 export default function Newsletter() {
   const [email, setEmail] = useState('');
@@ -18,13 +19,18 @@ export default function Newsletter() {
     setStatus('submitting');
     setMessage('');
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    // Simulate success (replace with real API)
-    setStatus('success');
-    setMessage('Thank you for subscribing! Exclusive offers coming your way.');
-    setEmail('');
+    try {
+      await newsletterApi.subscribe({
+        email,
+        name: email.split('@')[0] || undefined,
+      });
+      setStatus('success');
+      setMessage('Thank you for subscribing! Exclusive offers coming your way.');
+      setEmail('');
+    } catch {
+      setStatus('error');
+      setMessage('Failed to subscribe. Please try again.');
+    }
 
     // Reset status after a few seconds
     setTimeout(() => {
